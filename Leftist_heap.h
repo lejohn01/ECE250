@@ -101,7 +101,7 @@ int Leftist_heap<Type>::null_path_length() const
 template <typename Type>
 int Leftist_heap<Type>::count(Type const &obj) const
 {
-	//count(5) should return how many times 5 appears
+	return this->root_node->count(obj);
 }
 template <typename Type>
 Type Leftist_heap<Type>::top() const
@@ -116,10 +116,8 @@ Type Leftist_heap<Type>::top() const
 template <typename Type>
 void Leftist_heap<Type>::push(const Type &obj)
 {
-
-	Leftist_heap<Type> *new_heap = new Leftist_heap();
-	new_heap->root_node = new Leftist_node<Type>(obj);
-	this->root_node->push(new_heap->root_node, root_node);
+	Leftist_node<Type> *new_node = new Leftist_node<Type>(obj);//1
+	this->root_node->push(new_node, this->root_node);
 	heap_size++;
 	return;
 	//adds node to existing heap
@@ -135,19 +133,19 @@ Type Leftist_heap<Type>::pop()
 	if(!this->root_node->left() and !this->root_node->right())
 	{
 		Type tm = this->root_node->retrieve();
-		this->root_node = nullptr;
+		//delete this->root_node;
 		heap_size--;
 		return tm;
 	}
 	Type elem = this->root_node->retrieve();
 	Leftist_node<Type>* root_left = this->root_node->left();
 	Leftist_node<Type>* right = this->root_node->right();
-	delete this->root_node;
+	//delete this->root_node;
 	root_left->push(right, root_left);
 
 	this->root_node = root_left;
 	heap_size--;
-	delete right;
+	//delete right;
 	return elem;
 
 }
@@ -155,12 +153,13 @@ Type Leftist_heap<Type>::pop()
 template <typename Type>
 void Leftist_heap<Type>::clear()
 {
+
+	//std::cout<<"heap clear"<<std::endl;
+	root_node->clear();
 	heap_size = 0;
-	(*root_node).clear();
 	root_node = nullptr;
-	//TODO: count needs to be implemented and push/pop have memory leaks
-	//other than that it's pretty good.
-	//calls clear on the root node and resets the root node and heap size
+
+	//TODO: fix memory leaks: there's leaks in simple push and reallocation push
 }
 // Your implementation here
 // STRONG HINT:  Write a default definition of each function, even if

@@ -79,7 +79,28 @@ Type Leftist_node<Type>::retrieve() const
 template <typename Type>
 int Leftist_node<Type>::count(Type const &obj) const
 {
-	return 5;
+	if(this == nullptr)
+	{
+		return 0;
+	}
+	int sum_left = 0;
+	int sum_right = 0;
+	if(this->retrieve() > obj)
+	{
+		return 0;
+	}
+	if(this->retrieve() == obj)
+	{
+		sum_left = this->left()->count(obj);
+		sum_right = this->right()->count(obj);
+		return 1 + (sum_left + sum_right);
+	}
+	if(this->retrieve() < obj)
+	{//go down its subtrees
+		sum_left = this->left()->count(obj);
+		sum_right = this->right()->count(obj);
+	}
+	return (sum_left + sum_right);
 	//count(5) returns how many times 5 appears in the subtree with this object as the root
 }
 template <typename Type>
@@ -115,7 +136,6 @@ void Leftist_node<Type>::push(Leftist_node *new_heap, Leftist_node *&pointer_to_
 	{
 		pointer_to_this = new_heap;
 		pointer_to_this->heap_null_path_length = 0;//update the null path length here
-		new_heap = nullptr;
 		return;
 	}
 	if((*pointer_to_this).retrieve() <= (*new_heap).retrieve())
@@ -127,6 +147,7 @@ void Leftist_node<Type>::push(Leftist_node *new_heap, Leftist_node *&pointer_to_
 			Leftist_node* temp = left_tree;
 			left_tree = right_tree;
 			right_tree = temp;
+			delete temp;
 		}
 		heap_null_path_length = 1 + this->right()->null_path_length();
 		return;
@@ -136,21 +157,23 @@ void Leftist_node<Type>::push(Leftist_node *new_heap, Leftist_node *&pointer_to_
 		Leftist_node* temp = pointer_to_this;
 		pointer_to_this = new_heap; //use a temp to hold the pointer_to_this as we need to add it back in
 		pointer_to_this->push(temp,new_heap);
+		//delete temp;
 		return;
 	}
 }
 template <typename Type>
 void Leftist_node<Type>::clear()
 {
-	/*if(left_tree)
+
+	if(this == nullptr)
 	{
-		(*left_tree).clear();
+		return;
 	}
-	if(right_tree)
-	{
-		(*right_tree).clear();
-	}*/
-	delete this;
+		left()->clear();
+		right()->clear();
+		delete this;
+
+	return;
 	//if this is null do nothing; otherwise call clear on this left subtree, right subtree, and this itself
 }
 // You must implement everything
