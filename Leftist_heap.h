@@ -56,7 +56,6 @@ class Leftist_heap {
 		void clear();
 
 	// Friends
-
 	template <typename T>
 	friend std::ostream &operator<<( std::ostream &, Leftist_heap<T> const & );
 };
@@ -142,13 +141,10 @@ Type Leftist_heap<Type>::pop()
 	}
 	Type elem = root_node->retrieve();
 	Leftist_node<Type>* root_temp = root_node;
-	//Leftist_node<Type>* right = ;
 	root_node = root_temp->left();
 	root_node->push(root_temp->right(), root_node);
 	delete root_temp;
-	//heap pop isn't working. it deletes the entire heap and ignore my root_left
 	heap_size--;
-	std::cout<<"root: "<< this->root_node->retrieve()<<std::endl;
 	return elem;
 
 }
@@ -169,7 +165,6 @@ void Leftist_heap<Type>::clear()
 	heap_size = 0;
 	root_node = nullptr;
 
-	//TODO: issue with pushing the same thing twice and popping one of them
 }
 // Your implementation here
 // STRONG HINT:  Write a default definition of each function, even if
