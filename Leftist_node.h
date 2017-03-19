@@ -140,23 +140,27 @@ void Leftist_node<Type>::push(Leftist_node *new_heap, Leftist_node *&pointer_to_
 	}
 	if((*pointer_to_this).retrieve() <= (*new_heap).retrieve())
 	{
-		this->right()->push(new_heap,right_tree);
 		//swap if the right tree's npl is larger than the left tree's npl
-		if(this->left()->null_path_length() < this->right()->null_path_length())
+		pointer_to_this->right()->push(new_heap,right_tree);
+		if(pointer_to_this->left()->null_path_length() < pointer_to_this->right()->null_path_length())
 		{
 			Leftist_node* temp = left_tree;
 			left_tree = right_tree;
 			right_tree = temp;
-			delete temp;
 		}
-		heap_null_path_length = 1 + this->right()->null_path_length();
+		//std::cout<<"pts: "<< pointer_to_this->retrieve()<<std::endl;
+		//std::cout<<"left: "<< right_tree->retrieve()<<std::endl;
+		heap_null_path_length = 1 + pointer_to_this->right()->null_path_length();
 		return;
 	}
 	else
 	{
 		Leftist_node* temp = pointer_to_this;
 		pointer_to_this = new_heap; //use a temp to hold the pointer_to_this as we need to add it back in
-		pointer_to_this->push(temp,new_heap);
+		//std::cout<<"pts: "<< pointer_to_this->retrieve()<<std::endl;
+		//std::cout<<"temp: "<< temp->retrieve()<<std::endl;
+		pointer_to_this->push(temp,pointer_to_this);
+
 		//delete temp;
 		return;
 	}
@@ -164,14 +168,13 @@ void Leftist_node<Type>::push(Leftist_node *new_heap, Leftist_node *&pointer_to_
 template <typename Type>
 void Leftist_node<Type>::clear()
 {
-
 	if(this == nullptr)
 	{
 		return;
 	}
-		left()->clear();
-		right()->clear();
-		delete this;
+	left()->clear();
+	right()->clear();
+	delete this;
 
 	return;
 	//if this is null do nothing; otherwise call clear on this left subtree, right subtree, and this itself

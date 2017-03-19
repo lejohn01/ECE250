@@ -119,33 +119,37 @@ void Leftist_heap<Type>::push(const Type &obj)
 	Leftist_node<Type> *new_node = new Leftist_node<Type>(obj);//1
 	this->root_node->push(new_node, this->root_node);
 	heap_size++;
+
+	//std::cout<<"root: "<< this->root_node->retrieve()<<std::endl;
 	return;
 	//adds node to existing heap
 }
 template <typename Type>
 Type Leftist_heap<Type>::pop()
 {
-	if(this->root_node == nullptr)
+	if(root_node == nullptr)
 	{
 		underflow u;
 		throw u;
 	}
-	if(!this->root_node->left() and !this->root_node->right())
+	if(!root_node->left() and !root_node->right())
 	{
-		Type tm = this->root_node->retrieve();
-		//delete this->root_node;
+		Type tm = root_node->retrieve();
+		root_node->clear();
+		root_node = nullptr;
 		heap_size--;
 		return tm;
 	}
-	Type elem = this->root_node->retrieve();
-	Leftist_node<Type>* root_left = this->root_node->left();
-	Leftist_node<Type>* right = this->root_node->right();
-	//delete this->root_node;
-	root_left->push(right, root_left);
+	Type elem = root_node->retrieve();
+	Leftist_node<Type>* root_left = root_node->left();
+	//Leftist_node<Type>* right = ;
+	root_left->push(root_node->right(), root_left);
 
-	this->root_node = root_left;
+	root_node->clear();
+	//heap pop isn't working. it deletes the entire heap and ignore my root_left
+	root_node = root_left;
 	heap_size--;
-	//delete right;
+	std::cout<<"root: "<< this->root_node->retrieve()<<std::endl;
 	return elem;
 
 }
@@ -153,13 +157,20 @@ Type Leftist_heap<Type>::pop()
 template <typename Type>
 void Leftist_heap<Type>::clear()
 {
+	if(this == nullptr)
+	{
+		return;
+	}
 
-	//std::cout<<"heap clear"<<std::endl;
-	root_node->clear();
+	if(root_node != nullptr)
+	{
+			root_node->clear();
+	}
+
 	heap_size = 0;
 	root_node = nullptr;
 
-	//TODO: fix memory leaks: there's leaks in simple push and reallocation push
+	//TODO: issue with pushing the same thing twice and popping one of them
 }
 // Your implementation here
 // STRONG HINT:  Write a default definition of each function, even if
