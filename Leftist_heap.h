@@ -141,13 +141,12 @@ Type Leftist_heap<Type>::pop()
 		return tm;
 	}
 	Type elem = root_node->retrieve();
-	Leftist_node<Type>* root_left = root_node->left();
+	Leftist_node<Type>* root_temp = root_node;
 	//Leftist_node<Type>* right = ;
-	root_left->push(root_node->right(), root_left);
-
-	root_node->clear();
+	root_node = root_temp->left();
+	root_node->push(root_temp->right(), root_node);
+	delete root_temp;
 	//heap pop isn't working. it deletes the entire heap and ignore my root_left
-	root_node = root_left;
 	heap_size--;
 	std::cout<<"root: "<< this->root_node->retrieve()<<std::endl;
 	return elem;
