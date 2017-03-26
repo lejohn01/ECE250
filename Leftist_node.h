@@ -129,13 +129,13 @@ void Leftist_node<Type>::push(Leftist_node *new_heap, Leftist_node *&pointer_to_
 {
 	if (new_heap == nullptr)
 	{
-		heap_null_path_length =-1;
+		//heap_null_path_length =-1;
 		return;
 	}
 	if(pointer_to_this == nullptr)
 	{
 		pointer_to_this = new_heap;
-		pointer_to_this->heap_null_path_length = 1 + pointer_to_this->right()->null_path_length();//update the null path length here
+		pointer_to_this->heap_null_path_length = 1 + std::min(pointer_to_this->right()->null_path_length(),pointer_to_this->left()->null_path_length());//update the null path length here
 		return;
 	}
 	if((*pointer_to_this).retrieve() <= (*new_heap).retrieve())
